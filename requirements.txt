@@ -1,7 +1,7 @@
 numpy
-tqdm 
-moviepy 
-opencv-python 
-scikit-learn 
+tqdm
+moviepy
+opencv-python-headless
+scikit-learn
 torch
 torchvision
