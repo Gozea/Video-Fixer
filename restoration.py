@@ -27,16 +27,41 @@ transform = transforms.Compose([
 
 
 class VideoFixer():
+    """
+    A class to fix videos that have artifact issues or shuffled frames.
+    It provides methods to extract frames, detect features, remove artifacts,
+    cluster frames, arrange them in the correct order, and generate a fixed video.
+    """
+
     def __init__(self, video_name, model=mobilenet_v3_small):
+        """
+        Initialize the VideoFixer class with the video input and model.
+
+        Parameters:
+        - video_name (str): Path to the input video file.
+        - model (torch.nn.Module, optional): The model to use for feature extraction (default is 'mobilenet_v3_small').
+        """
         self.video_name = video_name
         self.model = model
 
     def get_frames(self):
+        """
+        Extract all frames from the video input.
+
+        Returns:
+        - frames (list): A list of video frames.
+        """
         video = VideoFileClip(self.video_name)
         frames = [frame for frame in video.iter_frames()]
         return frames
 
     def get_features(self):
+         """
+        Extract feature vectors from each frame of the video input using the model.
+
+        Returns:
+        - features (numpy.ndarray): A numpy array of extracted features from all frames.
+        """
         frames = self.get_frames()
 
         model = self.model(weights="DEFAULT")
@@ -53,12 +78,39 @@ class VideoFixer():
         return features
 
     def find_clusters(self, features):
+        """
+        Find clusters of similar frames based on extracted features.
+
+        This method uses DBSCAN clustering to group frames with similar features
+        based on their Euclidean distance.
+
+        Parameters:
+        - features (numpy.ndarray): A numpy array of frame features.
+
+        Returns:
+        - clusters (numpy.ndarray): A numpy array of cluster labels corresponding to each frame.
+        """
         #clusters = KMeans(n_clusters=2, random_state=42).fit_predict(features)
         clusters = DBSCAN(eps=40).fit_predict(features)  # epsilon value found with K-distance between cluster
         unique, counts = np.unique(clusters, return_counts=True)
         return clusters
 
     def remove_artifacts(self, frames, features, clusters):
+        """
+        Remove frames that belong to outlier clusters, keeping the most frequent cluster.
+
+        This method identifies the most common cluster and returns the frames and features
+        that belong to this cluster, effectively removing outlier frames.
+
+        Parameters:
+        - frames (list): List of video frames.
+        - features (numpy.ndarray): A numpy array of frame features.
+        - clusters (numpy.ndarray): A numpy array of cluster labels.
+
+        Returns:
+        - correct_frames (list): A list of frames belonging to the most common cluster.
+        - correct_features (numpy.ndarray): A numpy array of features for frames in the most common cluster.
+        """
         labels, counts = np.unique(clusters, return_counts=True)
         most_represented_label = labels[np.argmax(counts)]
         correct_frames = [frame for frame, label in zip(frames, clusters) if label==most_represented_label]
@@ -67,6 +119,22 @@ class VideoFixer():
 
 
     def arrange_frames(self, correct_frames, correct_features, first_frame=0):
+        """
+        Arrange frames in a sequence based on the similarity of their features.
+
+        This method builds a matrix of distances between frames and arranges them in the
+        most logical sequence based on feature similarity, starting with a provided
+        first frame.
+
+        Parameters:
+        - correct_frames (list): The list of frames that belong to the correct cluster.
+        - correct_features (numpy.ndarray): Features of the correct frames.
+        - first_frame (int, optional): The index of the first frame to start with (default is 0).
+
+        Returns:
+        - ordered_frames (list): A list of frames arranged in the correct order.
+        - ordered_features (numpy.ndarray): Features of the frames arranged in the correct order.
+        """
         # create a matrix of distance between each points
         neigh = NearestNeighbors(n_neighbors=len(correct_frames), algorithm='ball_tree').fit(correct_features) # get matrix of distance between each points
         distances, idx = neigh.kneighbors(correct_features)
@@ -83,10 +151,18 @@ class VideoFixer():
 
     def find_first_and_last_frames(self, features):
         """
-        After using arrange_frame the first time, we have 4 candidates to be the first or last frame of the original video.
-        The four candidates are the first and last frames of the current sequences, and 2 frames that have a cut between them;
-        We can eliminate 2 out of the 4 to only get the first and last frame.
-        To do so, we have to identify the consecutive frames that have a cut (distance > threshold)
+        Find the first and last frames of the true video.
+
+        This method identifies the four potential candidates for the first and last
+        frames of the true video, which are the two ends of the rearranged sequence and two frames
+        where there is a significant cut between them. The method eliminates the
+        frames that are too close and returns the final first and last frames.
+
+        Parameters:
+        - features (numpy.ndarray): The features of the frames after arrangement.
+
+        Returns:
+        - candidates (list): A list of two indices, the first and last frames of the sequence.
         """
         # Get the four candidates
         candidates = [0, len(features)-1]
@@ -106,6 +182,19 @@ class VideoFixer():
         return candidates
 
     def optical_flow(self, frame1, frame2):
+        """
+        Compute the optical flow between two frames.
+
+        This method calculates the optical flow between two frames to estimate the motion
+        of objects between the frames.
+
+        Parameters:
+        - frame1 (ndarray): The first frame.
+        - frame2 (ndarray): The second frame.
+
+        Returns:
+        - magnitude (float): The mean magnitude of the optical flow.
+        """
         gray1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
         gray2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
         flow = cv2.calcOpticalFlowFarneback(gray1, gray2, None, 0.5, 3, 15, 3, 5, 1.2, 0)
@@ -114,7 +203,18 @@ class VideoFixer():
 
     def fix_video(self, output_file="fixed_video.mp4"):
         """
-        Use this function to fix the video
+        Fix the video by removing artifacts and reordering the frames.
+
+        This method processes the video by extracting frames, obtaining their features,
+        clustering them, removing artifacts, and rearranging them in the correct order.
+        It then computes optical flow to select the best candidate for the final video
+        and writes the fixed video to the output file.
+
+        Parameters:
+        - output_file (str, optional): The path to save the fixed video (default is 'fixed_video.mp4').
+
+        Returns:
+        - None: The method writes the fixed video directly to the specified output file.
         """
         frames = self.get_frames()
         features = self.get_features()
