@@ -1,7 +1,8 @@
+streamlit==1.18.0
 numpy
 tqdm
 moviepy
 opencv-python-headless
 scikit-learn
-torch
-torchvision
+torch==2.0.1
+torchvision==0.15.1

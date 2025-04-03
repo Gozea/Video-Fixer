@@ -19,3 +19,9 @@ The default model is mobilenet_v3_small
 You can directly have a demo on the corrupted video provided in this repo
 
 ```python3 main.py -i corrupted_video.mp4```
+
+# GUI
+
+You can also launch it in a GUI app
+
+```streamlit run deployment.py```
