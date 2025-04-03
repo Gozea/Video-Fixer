@@ -29,11 +29,14 @@ To use this program, simply use the following command in your python environment
 
 ```python3 main.py -i <your_videofile>```
 
-This program uses pretrained models. You can choose among mobile mobilenet_v3_small, resnet18 or resnet50
+This program uses pretrained models. You can choose the mobilenet_v3_small or the resnet18 model
 
 ```python3 main.py -i <your_video_file> -m <model>```
 
-The default model is mobilenet_v3_small
+The default model is mobilenet_v3_small. To launch with resnet18, you can just type
+
+
+```python3 main.py -i <your_video_file> -m resnet18```
 
 ## Demo
 
