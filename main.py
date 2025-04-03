@@ -5,7 +5,7 @@ from torchvision.models import mobilenet_v3_small, resnet18
 
 models = {
         "mobilenet_v3_small": mobilenet_v3_small,
-        "resnet18": resnet18
+        "resnet18": resnet18,
         }
 
 if __name__ == "__main__":

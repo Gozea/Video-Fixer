@@ -56,7 +56,7 @@ class VideoFixer():
         return frames
 
     def get_features(self):
-         """
+        """
         Extract feature vectors from each frame of the video input using the model.
 
         Returns:
@@ -137,15 +137,15 @@ class VideoFixer():
         """
         # create a matrix of distance between each points
         neigh = NearestNeighbors(n_neighbors=len(correct_frames), algorithm='ball_tree').fit(correct_features) # get matrix of distance between each points
-        distances, idx = neigh.kneighbors(correct_features)
+        distances, idx = neigh.kneighbors(correct_features)  # idx[:,1] is the closest neighbour
 
         # find incrementaly the closest frame to the last visited
         visited_frames = [first_frame]  # init first frame
         for i in range(len(correct_frames)-2):
             nearest_idx = 1
-            neighbors_current_frame = idx[visited_frames[-1]]
+            neighbors_current_frame = idx[visited_frames[-1]]  # get neighbour of current frame
             while neighbors_current_frame[nearest_idx] in visited_frames:
-                nearest_idx += 1
+                nearest_idx += 1  # if nearest neighbour already visited, we get the nearest+1
             visited_frames.append(int(neighbors_current_frame[nearest_idx]))
         return [correct_frames[frame] for frame in visited_frames], correct_features[visited_frames]
 
@@ -168,6 +168,7 @@ class VideoFixer():
         candidates = [0, len(features)-1]
         highest_distance = 0
         for i in range(len(features)-1):
+            # find the two consecutive frames with the highest distance
             current_distance = pairwise_distances(features[i].reshape(1, -1), features[i+1].reshape(1, -1), metric='euclidean')
             if current_distance > highest_distance:
                 cut = [i, i+1]
@@ -222,9 +223,10 @@ class VideoFixer():
         real_frames, real_features = self.remove_artifacts(frames, features, clusters)
         frames_with_cut, features_with_cut = self.arrange_frames(real_frames, real_features)
         
+        # we find the first and last frame of the true video
         two_candidate_frames = self.find_first_and_last_frames(features_with_cut)
-        frames_candidate_1, features_candidate_1 = self.arrange_frames(frames_with_cut, features_with_cut, first_frame=two_candidate_frames[0])
         frames_candidate_2, features_candidate_2 = self.arrange_frames(frames_with_cut, features_with_cut, first_frame=two_candidate_frames[1])
+        frames_candidate_1, features_candidate_1 = self.arrange_frames(frames_with_cut, features_with_cut, first_frame=two_candidate_frames[0])
 
         # compute optical flow
         flow1 = self.optical_flow(frames_candidate_1[0], frames_candidate_1[len(frames_candidate_1)//2])
