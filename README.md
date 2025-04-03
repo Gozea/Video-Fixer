@@ -1,6 +1,6 @@
 # Installation
 
-```pip install numpy tqdm moviepy cv2 scikit-learn torch torchvision```
+```pip install numpy tqdm moviepy opencv-python scikit-learn torch torchvision```
 
 # How to use
 

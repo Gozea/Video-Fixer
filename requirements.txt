@@ -1,0 +1,7 @@
+numpy
+tqdm 
+moviepy 
+opencv-python 
+scikit-learn 
+torch
+torchvision
