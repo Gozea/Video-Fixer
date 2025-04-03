@@ -8,7 +8,7 @@ This project reconstructs a video whose frames have been shuffled and may contai
    - Uses pretrained models (e.g., `mobilenet_v3_small`, `resnet18`) to extract features from video frames.
 
 2. **Clustering**:
-   - Frames are clustered based on feature similarity, and the most represented cluster is assumed to contain the original frames. The other are assumed to be artifacts and are removed.
+   - Frames are clustered based on feature similarity, and the most represented cluster is assumed to contain the original frames. The other are assumed to be artifacts and are removed. If artifacts don't get properly removed, it might be a good idea to lower the eps value in DBSCAN.
 
 3. **Frame Reordering**:
    - Frames are reordered by calculating Euclidean distances between their features, iteratively selecting the closest frame. This gives a smooth video with a cut at the middle since we didn't iterate on the true first frame of the video.
@@ -35,14 +35,19 @@ This program uses pretrained models. You can choose the mobilenet_v3_small or th
 
 The default model is mobilenet_v3_small. To launch with resnet18, you can just type
 
-
 ```python3 main.py -i <your_video_file> -m resnet18```
+
+Using resnet18 as a model usually gives better results than mobilenet_v3_small
 
 ## Demo
 
-You can directly have a demo on the corrupted video provided in this repo
+You can directly have a demo on the corrupted video provided in this repo.
 
 ```python3 main.py -i corrupted_video.mp4```
+
+Results will generally be better if you use resnet18 instead of the base model
+
+```python3 main.py -i corrupted_video.mp4 -m resnet18```
 
 ## GUI
 
