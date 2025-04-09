@@ -51,6 +51,6 @@ Results will generally be better if you use resnet18 instead of the base model
 
 ## GUI
 
-You can also launch it in a GUI app
+You can also launch it in a GUI app and drop your video
 
 ```streamlit run deployment.py```
