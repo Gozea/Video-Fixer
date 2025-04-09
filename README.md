@@ -25,7 +25,7 @@ This project reconstructs a video whose frames have been shuffled and may contai
 
 ## How to use
 
-To use this program, simply use the following command in your python environment
+To use this program, simply use the following command in your python environment.
 
 ```python3 main.py -i <your_videofile>```
 
