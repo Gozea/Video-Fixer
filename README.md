@@ -3,7 +3,8 @@
 This project reconstructs a video whose frames have been shuffled and may contain artifacts. It reorders the frames to restore the original video sequence.
 
 You can use the project directly here :
-(https://video-fixer.streamlit.app/)
+
+https://video-fixer.streamlit.app/
 
 ## Approach
 
