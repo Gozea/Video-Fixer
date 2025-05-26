@@ -10,7 +10,7 @@ https://video-fixer.streamlit.app/
 
 Download the following video
 
-<video src="corrupted_video.mp4"/>
+
 
 And put it in the fixer on the online app
 
