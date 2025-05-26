@@ -11,6 +11,7 @@ https://video-fixer.streamlit.app/
 Download the following video
 
 
+[![](corrupted_video.gif)](corrupted_video.mp4)
 
 And put it in the fixer on the online app
 
@@ -18,7 +19,7 @@ https://video-fixer.streamlit.app/
 
 You should end up with this result (using the resnet18 model)
 
-
+[![](fixed_video.gif)](fixed_video.mp4)
 
 ## Approach
 
