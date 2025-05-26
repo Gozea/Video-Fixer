@@ -6,6 +6,20 @@ You can use the project directly here :
 
 https://video-fixer.streamlit.app/
 
+## Demo 
+
+Download the following video
+
+![](corrupted_video.mp4)
+
+And put it in the fixer on the online app
+
+https://video-fixer.streamlit.app/
+
+You should end up with this result (using the resnet18 model)
+
+![](fixed_video.mp4)
+
 ## Approach
 
 1. **Feature Extraction**:
