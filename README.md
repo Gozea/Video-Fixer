@@ -11,11 +11,20 @@ https://video-fixer.streamlit.app/
 Download the following video
 
 
+https://github.com/user-attachments/assets/0eaa2d30-cb7f-43c5-90c2-bd74412a78b5
+
+
+
+
 And put it in the fixer on the online app
 
 https://video-fixer.streamlit.app/
 
 You should end up with this result (using the resnet18 model)
+
+
+https://github.com/user-attachments/assets/6e8b4d0c-b479-4051-8657-91cfad41fccc
+
 
 
 ## Approach
