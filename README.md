@@ -46,6 +46,8 @@ https://github.com/user-attachments/assets/6e8b4d0c-b479-4051-8657-91cfad41fccc
 
 ## Installation
 
+Everything needed is in the requirements.txt
+
 ```pip -r requirements.txt```
 
 ## How to use
